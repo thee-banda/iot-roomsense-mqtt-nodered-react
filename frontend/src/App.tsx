@@ -13,7 +13,7 @@ const sampleReading: SensorReading = {
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0b1120]">
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
       <div className="flex flex-col items-center gap-6">
         <Navbar />
         <Card reading={sampleReading} />
