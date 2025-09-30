@@ -1,0 +1,88 @@
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./Backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/iotdb
+      MQTT_URL: mqtt://mqtt-broker:1883
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+      mqtt-broker:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - iot-net
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iot-net
+
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    networks:
+      - iot-net
+
+  nodered:
+    image: nodered/node-red:3.1
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    depends_on:
+      mqtt-broker:
+        condition: service_started
+    volumes:
+      - nodered-data:/data
+    networks:
+      - iot-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: /api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/certs:/etc/nginx/certs:ro
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - iot-net
+
+volumes:
+  mongo-data:
+  mosquitto-data:
+  mosquitto-log:
+  nodered-data:
+
+networks:
+  iot-net:
+    driver: bridge
