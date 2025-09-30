@@ -16,19 +16,19 @@ const Card = ({ reading }: CardProps) => {
     : null
 
   return (
-    <div className="w-[200px] h-[137px] rounded-[20px] bg-[rgba(38,175,25,0.33)] backdrop-blur-sm border border-white/5 text-white flex flex-col justify-between p-4 shadow-[inset_0_4px_0_rgba(0,0,0,0.25)] drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+    <div className="w-[200px] h-[137px] rounded-[20px] bg-[rgba(38,175,25,0.33)] backdrop-blur-sm border border-emerald-200/60 text-slate-800 flex flex-col justify-between p-4 shadow-[inset_0_4px_0_rgba(0,0,0,0.25)] drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
       <div>
-        <h3 className="text-sm font-semibold tracking-wide">{reading.label}</h3>
+        <h3 className="text-sm font-semibold tracking-wide text-emerald-900">{reading.label}</h3>
         {reading.description ? (
-          <p className="text-xs text-white/80 mt-1">{reading.description}</p>
+          <p className="text-xs text-slate-600 mt-1">{reading.description}</p>
         ) : null}
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="text-3xl font-bold">{reading.value}</span>
-        <span className="text-xs uppercase tracking-wider text-white/80">{reading.unit}</span>
+        <span className="text-3xl font-bold text-emerald-950">{reading.value}</span>
+        <span className="text-xs uppercase tracking-wider text-slate-600">{reading.unit}</span>
       </div>
       {formattedTimestamp ? (
-        <p className="text-[10px] text-white/60 text-right">Updated {formattedTimestamp}</p>
+        <p className="text-[10px] text-slate-500 text-right">Updated {formattedTimestamp}</p>
       ) : null}
     </div>
   )
